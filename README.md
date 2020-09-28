@@ -22,7 +22,7 @@ Ex. Main Menu
 In this case, the user would enter "NEW" to create a new account, "L" to login, etc...
 
 The password entered must contain
-- At least 8 characters long
+- 8 characters
 - At least 1 Uppercase letter
 - At least 1 lower case letter
 - At least 1 number
