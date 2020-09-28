@@ -16,8 +16,8 @@ This application has a variety of menus in which it prompts the user to enter an
 Ex. Main Menu
 - Login (L)
 - Forgot Password (FP)
--Create an account (NEW)
--Exit (EXIT)
+- Create an account (NEW)
+- Exit (EXIT)
 
 In this case, you would have to enter "NEW" to create a new account, "L" to login, etc...
 
