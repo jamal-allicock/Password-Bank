@@ -19,7 +19,23 @@ Ex. Main Menu
 - Create an account (NEW)
 - Exit (EXIT)
 
-In this case, you would have to enter "NEW" to create a new account, "L" to login, etc...
+In this case, the user would enter "NEW" to create a new account, "L" to login, etc...
+
+The password entered must contain
+- At least 8 characters long
+- At least 1 Uppercase letter
+- At least 1 lower case letter
+- At least 1 number
+- At least 1 special character ("!", "@", "$", "&", "*", "_", or ".")
+
+The email must have one of the following domains
+- gmail.com
+- yahoo.com
+- yahoo.ca 
+- live.com
+- outlook.com
+- hotmail.com
 
 ## Visuals
-![What it would look like in the command-line](https://github.com/jamal-allicock/Password-Bank/blob/master/main_menu.png)
+![What it would look like in the command-line](https://github.com/jamal-allicock/Password-Bank/blob/master/menus.png)
+![The menu to add social media platforms](https://github.com/jamal-allicock/Password-Bank/blob/master/media_menu.png)
