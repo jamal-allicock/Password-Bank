@@ -1,7 +1,8 @@
 # Password-Bank
 This project is a command-line application that's intended to store and encrypt your social media
 passwords for future reference. The application itself will need a username, email, and password 
-to be able to use the features.
+to be able to use the features. Therefore, multiple users may use this application to store their
+social media account information on a device.
 
 ## Built With
 - Python 3
@@ -12,7 +13,11 @@ to be able to use the features.
   - After directing command-line into the application's folder, enter "python passwordBank.py"
   
 ## How To Use
-This application has a variety of menus in which it prompts the user to enter an acronym associated with an action.
+There are two menus in this application.
+The first menu is the Main Menu, where the user can register an account, or login to access the Media Menu.
+The second menu is the Media Menu, where the user can add, edit, and view their social media information.
+Both of these menus prompts the user to enter an acronym associated with an action.
+
 Ex. Main Menu
 - Login (L)
 - Forgot Password (FP)
@@ -21,7 +26,7 @@ Ex. Main Menu
 
 In this case, the user would enter "NEW" to create a new account, "L" to login, etc...
 
-The password entered must contain
+Any password entered must contain
 - 8 characters
 - At least 1 Uppercase letter
 - At least 1 lower case letter
