@@ -1,10 +1,7 @@
-# Create passwordBank class
 import re
 import random
-import time
 
-
-class PasswordBank:
+class passwordBank:
     # local variables
     VALID_DOMAINS = ["gmail.com", "yahoo.com", "outlook.com",
                      "hotmail.com", "yahoo.ca", "live.com"]
@@ -18,7 +15,6 @@ class PasswordBank:
     # user passwordsBank
 
     # constructor
-
     def __init__(self, name_of_person, username_account):
         self.name = name_of_person
         self.unique_key = self.create_unique_key()
@@ -26,7 +22,6 @@ class PasswordBank:
         self.password = self.create_password()
         self.email = self.create_email()
         self.platform_dict={}
-
 
 
     def __repr__(self):
@@ -72,7 +67,7 @@ class PasswordBank:
         print(f"The previous name on this account was {self.name}.")
 
         self.input_text = "Enter updated name"
-        self.results = PasswordBank.answer_question(self.input_text)
+        self.results = passwordBank.answer_question(self.input_text)
 
         if (not self.results): return
         self.name = self.results
@@ -127,7 +122,7 @@ class PasswordBank:
     # Parameter: None
     # Return: None
     # Purpose: change account password
-    def update_account_password(self):  # ISSUE IT'S STUCK IN A LOOP
+    def update_account_password(self):  
         self.updated_password = None
         self.previous = ''.join(self.password)
 
@@ -247,7 +242,7 @@ class PasswordBank:
         # once a valid email is entered, it will return the email, cutting the while loop
         while True:
             self.email = input("Please enter a valid email: ")
-            for self.domain in PasswordBank.VALID_DOMAINS:
+            for self.domain in passwordBank.VALID_DOMAINS:
 
                 # If there is a space in the entered email, break the for loop to ask for input again
                 if ' ' in self.email: break
@@ -274,24 +269,63 @@ class PasswordBank:
             if self.end == "stop":
                 print("\n")
                 break
+        
+            self.add_account()
+         
+    
+    # Function: add_account
+    # Parameter: none
+    # Return: none
+    # Purpose: add account to platform
+    def add_account(self):
+        
+        self.input_text = "What platform would you like to add an account to: "
+        self.results = passwordBank.answer_question(self.input_text)
+        if (self.results == "stop" or not self.results): 
+            print(self.results)
 
-            self.input_text = "Enter the name of the platform"
-            self.results = PasswordBank.answer_question(self.input_text)
-            if (self.results == "stop" or not self.results): return
-            else:self.platform = self.results
-            print("\n")
-            self.input_text = "Enter your username for the platform"
-            self.results = PasswordBank.answer_question(self.input_text)
-            if (not self.results): return
-            else: self.username_media = self.results
-            print("\n")
+            return
+        else:
+            self.platform = self.results.lower()
+
+        if self.platform.casefold() not in self.platform_dict:
+            self.setup_account(self.platform,True)
+
+
+        else:
+            print("Adding on to existing platform..")
+            for elem in self.platform_dict:
+                if elem.casefold() == self.platform.casefold():
+                    self.setup_account(self.platform,False)
+                    return                 
+
+
+    def setup_account(self,platform,new):
+        self.input_text = "Enter your username for the platform"
+        self.results = passwordBank.answer_question(self.input_text)
+
+        if (not self.results):
+            return
+        else:
+
+            self.username_media = self.results
+            print("\n")      
             # Collect password for media platform
             self.platform_password = self.create_password()
 
             # Store username and password in dictionary key: platform value: [username,password]
-            self.temp_key = [self.username_media, self.platform_password]
-            self.platform_dict[self.platform] = self.temp_key
-            print(f"{self.platform} has been successfully added.\n")
+            if (new):
+                self.temp_key = [self.username_media, self.platform_password]
+                self.platform_dict[platform] = [self.temp_key] 
+                print(f"{self.platform} has been successfully added.\n")
+            else:
+                self.temp_key = [self.username_media, self.platform_password]
+                self.platform_dict[platform].append(self.temp_key)
+
+
+                
+                
+        #{instagram:[['username','password'],[username,user]]}
 
     # Function: update_platform_username
     # Parameter: none
@@ -301,19 +335,21 @@ class PasswordBank:
         while True:
             # Collect platform name
             self.input_text = "Enter the platform name of which you choose to change the username"
-            self.platform = PasswordBank.answer_question(self.input_text)
+            self.platform = passwordBank.answer_question(self.input_text)
 
             # Check if platform exists
             if self.platform not in self.platform_dict:
                 print(self.platform + " is not in your bank.\n")
                 continue
-            if (not self.platform): return
+            if (not self.platform):
+                return
 
             # Collect username
             self.input_text = "Enter your new username"
-            self.results = PasswordBank.answer_question(self.input_text)
+            self.results = passwordBank.answer_question(self.input_text)
 
-            if (not self.results): return
+            if (not self.results):
+                return
             if (self.username_media == self.results):
                 print("Please do not use previous usernames.\n")
                 continue
@@ -331,7 +367,8 @@ class PasswordBank:
     # Purpose: Update platform password
     def update_platform_password(self):
         #if there are no platforms, return nothing
-        if not self.platform_dict: return
+        if not self.platform_dict:
+            return
         
         # Prints all of the platforms and usernames stored
         self.show_media_platforms()
@@ -339,13 +376,18 @@ class PasswordBank:
         # Collects platform from user. If the platform doesn't exist, return.
         self.new_platform_pass = input("What is the platform you would like to change the password of?\n")
 
-        if self.new_platform_pass not in self.platform_dict: return
-
+        # if self.new_platform_pass not in self.platform_dict:
+        #     return
+        self.user=input("Please enter your username: ")
+        for i in range(len(self.platform_dict[self.new_platform_pass])):
         # Updates the previous password
-        self.old_pass = self.decrypt_password(self.platform_dict[self.new_platform_pass][1])
-        print(f"The previous password is {''.join(self.old_pass)}\nPlease enter a new one")
-        self.new_pass = self.create_password()
-        self.platform_dict[self.platform][1] = self.new_pass
+            if self.platform_dict[self.new_platform_pass][i][0]==self.user:
+                self.old_pass = self.decrypt_password(self.platform_dict[self.new_platform_pass][i][1])
+                print(f"The previous password is {''.join(self.old_pass)}\nPlease enter a new one")
+                self.new_pass = self.create_password()
+                self.platform_dict[self.platform][i][1] = self.new_pass
+                return
+        print('You have entered an incorrect password or media.')
 
     # Function:remove_platform
     # Parameter: None
@@ -370,7 +412,7 @@ class PasswordBank:
                 print(f"The following is your username for {self.platform_removed}: {self.platform_dict.get(self.platform_removed)[0]}")
 
                 self.input_text = "Do you stll wish to delete this platform from your database? (Y/N)"
-                self.results = PasswordBank.answer_question(self.input_text)
+                self.results = passwordBank.answer_question(self.input_text)
 
                 if(not self.results): return
                 del self.platform_dict[self.platform_removed]
@@ -392,7 +434,8 @@ class PasswordBank:
         print("Platforms in your Bank:")
         for self.key in self.platform_dict:
             print(f"\t~{self.key}")
-            print(f"\t\t-{str(self.platform_dict.get(self.key)[0])}")
+            for i in range(len(self.platform_dict[self.key])):
+                print(f"\t\t-{str(self.platform_dict.get(self.key)[i][0])}")
 
     # Function: showMediaPlatformPassword
     # Parameter: None
@@ -409,308 +452,12 @@ class PasswordBank:
             self.access = input("Enter the platform you would like to see the password for: ")
             # Check if platform exists  -> print password
             if self.access in self.platform_dict:
-                print(f"The password for {self.access} is : {''.join(self.decrypt_password(self.platform_dict.get(self.access)[1]))}\n")
-                return
+                self.user = input('Please enter the username of the platform you wish to see: ')
+                for i in range(len(self.platform_dict[self.access])):
+                    if self.platform_dict[self.access][i][0]==self.user:
+                        print(f"The password for {self.access} is : {''.join(self.decrypt_password(self.platform_dict.get(self.access)[i][1]))}\n")
+                        return
+                print(f'The username \"{self.access}\" is not on file.\n')
             else:  # Check if platform does not exist
-                print(f"The platform \"{self.access}\" in not on file.\n")
+                print(f"The platform \"{self.access}\" is not on file.\n")
                 return
-
-
-# Function: createNewUser
-# Parameter: None
-# Return: None
-# Purpose: Create new user and add it to the database
-def create_new_user():
-    # Collect name from user
-    name = None
-    while not name:
-        input_text = "Enter your name"
-        results = PasswordBank.answer_question(input_text)
-        name = results
-        if (not results): return
-
-    # Loops through the user database to check if the entered username exists already
-    while True:
-        set = True
-        username = input("\nEnter username: ")
-        for item in user_database:
-            if(item.username == username):
-                set = False
-                print("This username already exist!\n")
-                break
-        if (set): break
-
-    # Add user to database
-    newUser = PasswordBank(name, username)
-    user_database.append(newUser)
-    print("Account successfully created!\n")
-
-# Function: changeUsername
-# Parameter: None
-# Return: the username of the person logged in!
-# Purpose: To change the username of the person logged in
-
-def change_username():
-    current_Username = user_logged_in.username
-    while True:
-        # Asks the user for an new username input and will cut the function if the user enters stop
-        error = True
-        new_username = input(
-            "Enter \"stop\" to not change username \nPlease enter your new username:  ")
-        if new_username == "stop": return
-
-        # Loops through the function to chech if the username already exists
-        for i in user_database:
-            if i.username == new_username:
-                print("This username has been used before, please enter a new username\n")
-                error = False
-                break
-        if not error: continue
-
-        new_username = user_logged_in.create_username(new_username)
-
-        # changes the username of the person logged in to the entered new username
-        user_logged_in.username = new_username
-        return user_logged_in.username
-
-
-
-# Function: login
-# Parameter: None
-# Return: item Object
-# Purpose: Login user into database
-def login():
-    print("LOG IN PAGE... \n")
-    # Check if username and password match and exist
-    while True:
-        # Collects username and password
-        username = input("Please enter a username: ")
-        password = input("Enter password: ")
-
-        # Searches for object by using username and decrypted password
-        for item in user_database:
-            print("\n")
-            if(item.username == username and ''.join(item.decrypt_password(item.password)) == password):
-                # Return object in variable once found
-                print("Logging in...")
-                print(f"Welcome {item.name}!\n")
-                return item
-
-        #Checks if user would like to leave
-        while True:
-            results = input("Incorrect Username or Password. Would you like to return to the main menu? (Y/N): ")
-            if results == "n" or results == "N": break
-            elif  results == "y" or results == "Y": return False
-            else: print("Please enter a valid input.\n")
-
-
-# Function: delete_account
-# Parameter: user Object
-# Return: Boolean
-# Purpose: To delete user from database
-def delete_account(user):
-    # Check if user would like to delete account
-    print("Would you like to delete your account (Y/N)?")
-    result = PasswordBank.answer_question(None)
-    answer = result
-    if not answer: return False
-
-    # Search for account and delete it from database
-    for i in range(len(user_database)):
-        # print(id(user_database[i]))
-        # print(id(user))
-        if id(user_database[i]) == id(user):
-            del user_database[i]
-            return True
-
-# Function: forgot_assword
-# Parameter: None
-# Return: None
-# Purpose: Remind user of lost password
-def forgot_password():
-    # prints passsword based on email or username
-    user_input = input("Enter your Email or Username to change your password: ")
-
-    for user in user_database:
-        if user.username == user_input or user.email == user_input:
-            print(f"{user.name}, your account has been found!\n")
-            found = ''.join(user.decrypt_password(user.password))
-            print(f"Your password is : {found}.")
-            return
-        else:
-            print("You have entered an invalid email or username.\n")
-            break
-
-user_database = []
-def settings(user):
-    while True:
-        print("\nSETTINGS\n_______________________________________________\nEnter the acroynm associated with the option:\n")
-        print("""\t-Update Account Name (UPAN)\n\t-Update Account Username (UPAU)\n\t-Update Account Password (UPAP)
-        -Delete Account(DELA)\n\t-Exit Settings(EXIT)\n""")
-        choice = input(">>")
-
-        if choice== "UPAN" or choice =="upan":
-            user.update_account_name()
-        elif choice == "upau" or choice == "UPAU":
-            change_username()
-        elif choice == "upap" or choice == "UPAP":
-            user.update_account_password()
-        elif choice == "dela" or choice == "DELA":
-            delete = delete_account(user)
-            if delete:
-                user_logged_in = None
-                return False
-        elif choice == "exit" or choice == "EXIT":
-            return True
-        else:
-            print("Please enter a valid input!\n>>")
-
-def media_menu(user):
-    while True:
-        print("\nMEDIA MENU\n_______________________________________________\nEnter the acroynm associated with the option:\n")
-        print("""\t-Add Platform (ADDP)\n\t-Delete Platform(DELP)\n\t-View Accounts(VIEW)
-        -Access Password(ACCP)\n\t-Update Platform Password(UPP)\n\t-Update Platform Username(UPU)
-        -Settings(SET)\n\t-Log Out(LO)\n""")
-        choice = input(">> ")
-        
-        if choice =="addp" or choice =="ADDP":
-            user.add_media_platform()
-        elif choice =="delp" or choice =="DELP":
-            user.remove_platform()
-        elif choice == "view" or choice =="VIEW":
-            user.show_media_platforms()
-        elif choice == "accp" or choice =="ACCP":
-            user.show_media_platform_password()
-        elif choice == "upp" or choice =="UPP":
-            user.update_platform_password()
-        elif choice == "upu" or choice =="UPU":
-            user.update_platform_username()
-        elif choice == "set" or choice == "SET":
-            result = settings(user)
-            if not result: return
-        elif choice == "lo" or choice == "LO":
-            print("Logging out...\n")
-            return
-        else:
-            print("Please enter a valid input!\n >>")
-
-#Main Menu
-while True:
-    user_logged_in=None  
-    print("MAIN MENU\n_______________________________________________\nEnter the acroynm associated with the options:\n")
-    print("\t-Login (L)\n\t-Forgot Password (FP)\n\t-Create an account (NEW)\n\t-Exit (EXIT)\n")
-    choice = input(">> ")
-    if choice =="L" or choice =="l":  
-        user_logged_in = login()
-        if not user_logged_in: continue
-        # print(f"User Database > {user_database}")
-        media_menu(user_logged_in) 
-    elif choice ==  "FP" or choice == "fp":
-        forgot_password()
-    elif choice=="NEW" or choice =="new":
-        create_new_user()
-    elif choice == "exit" or choice == "EXIT":
-        print("Thank you for using our program!!")
-        break
-    else:
-        print("Please enter a valid input!\n >>")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Main Menu (An actual function)
-
-# Create an account - Done
-#    Store all users of the passwordbank application in a list
-#       -Make sure username is unique
-#       createnewuser()
-# Login - DONE
-#   login()
-#        search if username and password is tied to an object with the class then we return it
-#        Now your logged in (media)
-#         we with a for loop....
-#           once it's found right?
-#           userLoggedIN = item <- object
-#
-#        M E D I A
-#        View all accounts - DONE
-#        Update platform password - DONE
-#        Delete Platform  - DONE
-#           - no platform return
-#        Add Platform - DONE
-#        Access password - DONE
-#           - no platform return
-#        Update platform password - DONE
-#           - no platform return
-#        Update platform username - DONE
-#           - no platform return
-#        Settings (actual account)
-#            Print info Collected - (email, name, username, accounts)
-#            Update account name - DONE
-#            Update account username -  90% DONE
-#            Update account password - DONE
-#            Delete account - DONE
-#        Log out - SIMPLE
-# FORGET PASSWORD - DONE
-#       userDatabase = [object, object,......]
-#       input string (email/username)
-#       check user or email
-#       search through UserDatabase look if the username or email exist
-#       return list[0].decrypt(password)
-#       for item in userDatabase:
-#           if (item.password == ____ || item.email == _____):
-#               found retuRn password
-
